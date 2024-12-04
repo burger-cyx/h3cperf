@@ -1,0 +1,19 @@
+.my-icon {
+  transition: color 0.3s; /* 平滑过渡效果 */
+  font-weight: bold;
+}
+
+.my-icon:hover {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.width-resp {
+  width: 80%;
+}
+
+@media (min-width: 1601px) {
+  .width-resp {
+    width: 1536px;
+  }
+}

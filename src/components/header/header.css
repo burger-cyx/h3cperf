@@ -1,0 +1,10 @@
+/* styles.css */
+.width-resp {
+  width: 80%;
+}
+
+@media (min-width: 1601px) {
+  .width-resp {
+    width: 1536px;
+  }
+}
