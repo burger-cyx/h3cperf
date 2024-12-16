@@ -1,0 +1,145 @@
+{
+  "type": "object",
+  "properties": {
+    "envConfig": {
+      "title": "环境配置",
+      "description": "",
+      "column": 4,
+      "type": "object",
+      "widget": "card",
+      "properties": {
+        "name": {
+          "title": "任务名称",
+          "type": "string",
+          "widget": "input",
+          "props": {
+            "allowClear": true
+          }
+        },
+        "model_id": {
+          "title": "模型",
+          "type": "string",
+          "props": {
+            "options": []
+          },
+          "widget": "select"
+        },
+        "dataset_id": {
+          "title": "数据集",
+          "type": "string",
+          "props": {
+            "options": []
+          },
+          "widget": "select"
+        },
+        "runtime_id": {
+          "title": "运行环境",
+          "type": "string",
+          "props": {
+            "options": []
+          },
+          "widget": "select"
+        }
+      }
+    },
+    "modelParam": {
+      "title": "模型参数",
+      "description": "",
+      "column": 4,
+      "type": "object",
+      "widget": "card",
+      "properties": {
+        "distributed_type": {
+          "title": "部署方式",
+          "type": "string",
+          "defaultValue": "单机单卡",
+          "props": {
+            "options": [
+              {
+                "label": "单机单卡",
+                "value": "单机单卡"
+              },
+              {
+                "label": "单机多卡",
+                "value": "单机多卡"
+              }
+            ]
+          },
+          "widget": "select"
+        },
+        "gpus": {
+          "title": "GPUs",
+          "type": "number",
+          "defaultValue": 1,
+          "widget": "inputNumber",
+          "hidden": "{{ formData.modelParam.distributed_type !== '单机多卡' }}"
+        },
+        "dtype": {
+          "title": "精度",
+          "type": "string",
+          "props": {
+            "options": [
+              {
+                "label": "float16",
+                "value": "float16"
+              },
+              {
+                "label": "bfloat16",
+                "value": "bfloat16"
+              },
+              {
+                "label": "float",
+                "value": "float"
+              }
+            ]
+          },
+          "defaultValue": "bfloat16",
+          "widget": "select"
+        },
+        "gpu_memory_ratio": {
+          "title": "显存占比",
+          "type": "number",
+          "defaultValue": 0.3,
+          "widget": "inputNumber",
+          "max": 1,
+          "min": 0
+        }
+      }
+    },
+    "requestParam": {
+      "title": "请求参数",
+      "description": "",
+      "column": 4,
+      "type": "object",
+      "widget": "card",
+      "properties": {
+        "max_seconds": {
+          "title": "测试时长（ s ）",
+          "type": "number",
+          "defaultValue": 30,
+          "widget": "inputNumber"
+        },
+        "distributed_type": {
+          "title": "部署方式",
+          "type": "string",
+          "props": {
+            "options": [
+              {
+                "label": "constant",
+                "value": "constant"
+              },
+              {
+                "label": "poisson",
+                "value": "poisson"
+              }
+            ]
+          },
+          "widget": "select"
+        }
+      }
+    }
+  },
+  "displayType": "column",
+  "column": 4,
+  "maxWidth": "340px"
+}

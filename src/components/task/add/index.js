@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { getIconByName } from "../../../config/header";
-
 import "./index.css";
 import { Button, Card, Flex, Form, Input, Select } from "antd";
 import {
@@ -13,6 +12,8 @@ import {
 } from "../../../api";
 import { useNavigate } from "react-router-dom";
 import TaskFormItem from "../../myForm";
+import FormRender, { useForm } from 'form-render';
+import config from "../../../config/config.json"
 
 const { Option } = Select;
 
@@ -61,6 +62,7 @@ const content = {
 
 const InferTaskAddContent = ({ id, name }) => {
   const [form] = Form.useForm();
+  const form1 = useForm()
   useEffect(() => {
     // 初始化渲染
     console.log("传入的模版id", id);
@@ -95,6 +97,7 @@ const InferTaskAddContent = ({ id, name }) => {
     // 获取模型列表
     getModelList(json).then(({ data }) => {
       const model = data.items.filter((i) => i.status === "FINISHED");
+      console.log("model list: ", model);
       setModels(model);
     });
     // 获取数据集列表
@@ -119,9 +122,11 @@ const InferTaskAddContent = ({ id, name }) => {
       template_id: id,
     };
     console.log("推理任务表单数据 =>", { ...values, ...defaultValue });
-    inferTaskAdd({ ...values, ...defaultValue }).then(() => {
-      navigate("/task/infer/list?tpl_tag=infer&tpl_id=" + id + "&tpl_name=" + name);
-    });
+    // inferTaskAdd({ ...values, ...defaultValue }).then(() => {
+    //   navigate(
+    //     "/task/infer/list?tpl_tag=infer&tpl_id=" + id + "&tpl_name=" + name
+    //   );
+    // });
   };
   const formItemLayout = {
     labelCol: { span: 8 },
@@ -129,6 +134,13 @@ const InferTaskAddContent = ({ id, name }) => {
   };
   return (
     <div style={content} className="width-resp">
+      <FormRender
+      form={form1}
+      schema={config}
+      labelWidth={200}
+      maxWidth={400}
+      
+    />
       <Form
         {...formItemLayout}
         form={form}
@@ -226,7 +238,7 @@ const TrainTaskAddContent = ({ id, name }) => {
     getTplById(id).then(({ data }) => {
       const tpl_config = data;
       setTpl(tpl_config);
-      
+
       //
       const config = {};
       tpl_config.base.forEach((element) => {
@@ -244,7 +256,7 @@ const TrainTaskAddContent = ({ id, name }) => {
         tpl_config.deepspeed.forEach((element) => {
           config[element.name] = element.default;
         });
-        console.log("tpl_configxxx", config);
+      console.log("tpl_config", config);
       const initialValue = {
         name: "",
         model_id: "",
@@ -289,7 +301,9 @@ const TrainTaskAddContent = ({ id, name }) => {
     };
     console.log("表单数据 =>", { ...values, ...defaultValue });
     trainTaskAdd({ ...values, ...defaultValue }).then(() => {
-      navigate("/task/train/list?tpl_tag=train&tpl_id=" + id + "&tpl_name=" + name);
+      navigate(
+        "/task/train/list?tpl_tag=train&tpl_id=" + id + "&tpl_name=" + name
+      );
     });
   };
 
@@ -377,22 +391,26 @@ const TrainTaskAddContent = ({ id, name }) => {
             <TaskFormItem tplConf={tpl.stage} />
           </Card>
         )}
-        {tpl.type && <Card
-          title="type"
-          bordered={true}
-          style={{ width: 600, margin: "auto", marginTop: 40 }}
-          hoverable
-        >
-          <TaskFormItem tplConf={tpl.type} />
-        </Card>}
-        {tpl.deepspeed && <Card
-          title="deepspeed"
-          bordered={true}
-          style={{ width: 600, margin: "auto", marginTop: 40 }}
-          hoverable
-        >
-          <TaskFormItem tplConf={tpl.deepspeed} />
-        </Card>}
+        {tpl.type && (
+          <Card
+            title="type"
+            bordered={true}
+            style={{ width: 600, margin: "auto", marginTop: 40 }}
+            hoverable
+          >
+            <TaskFormItem tplConf={tpl.type} />
+          </Card>
+        )}
+        {tpl.deepspeed && (
+          <Card
+            title="deepspeed"
+            bordered={true}
+            style={{ width: 600, margin: "auto", marginTop: 40 }}
+            hoverable
+          >
+            <TaskFormItem tplConf={tpl.deepspeed} />
+          </Card>
+        )}
         <div style={{ width: 600, margin: "auto", marginTop: 20 }}>
           <Form.Item wrapperCol={{ span: 12 }}>
             <Flex gap="small" wrap>
