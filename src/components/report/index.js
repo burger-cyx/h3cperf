@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import { getIconByName } from "../../config/header";
 
 import "./index.css";
-import { Button, Col, Descriptions, Row, Table } from "antd";
+import { Button, Card, Col, Descriptions, Row, Table } from "antd";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getTrainTaskById, inferReportGet, trainReportGet } from "../../api";
 import ECharts from "../ECharts";
-import getReportColumnPropsByType from "../../config/report/index"
+import getReportColumnPropsByType from "../../config/report/index";
 import DemoLine from "../antdChart";
-import { values } from "@ant-design/plots/es/core/utils";
 
 const titleStyle = {
   paddingLeft: 16,
@@ -17,6 +16,23 @@ const titleStyle = {
   margin: "auto",
   display: "flex",
   justifyContent: "space-between",
+};
+
+// 重新构造图表结构
+const xField = ["1%", "5%", "10%", "50%", "90%", "95%", "99%"];
+const formatData = (rawData, fliterKey) => {
+  const formated = rawData.flatMap((item) => {
+    // 使用空格分割data字符串，得到一个数组
+    const dataValues = item[fliterKey].split(",");
+    // 构造新的对象数组
+    return dataValues.map((dataValue) => ({
+      name:
+        item.rate === null ? item.mode : item.mode + "@" + item.rate.toFixed(3),
+      value: parseFloat(parseFloat(dataValue).toFixed(3)),
+      x: xField[dataValues.indexOf(dataValue)],
+    }));
+  });
+  return formated;
 };
 
 const ReportTitle = ({ title }) => {
@@ -100,7 +116,7 @@ const InferReportContent = () => {
     // 初始化渲染
     inferReportGet(reportId).then(({ data }) => {
       // 新获取 template_id
-      setResult(data)
+      setResult(data);
       // 处理请求参数的展示数据
       const params = {
         total_count: "请求总数",
@@ -117,20 +133,14 @@ const InferReportContent = () => {
         };
       });
       setParam(res);
-      // 重新构造图表结构
-      const xField = ["1%", "5%", "10%", "50%", "90%", "95%", "99%"]
-      const datas = data.flatMap(item => {
-        // 使用空格分割data字符串，得到一个数组
-        const dataValues = item.latency_p.split(",");
-        // 构造新的对象数组
-        return dataValues.map(dataValue => ({
-          name: item.rate === null ? item.mode : item.mode + "@" + item.rate.toFixed(2),
-          value: parseFloat(parseFloat(dataValue).toFixed(2)),
-          x: xField[dataValues.indexOf(dataValue)]
-        }));
-      });
-      console.log("datas", datas)
-      setEchartData(datas)
+
+      const formatedData = {
+        latency_p: formatData(data, "latency_p"),
+        ttft_p: tplName === "LLM" ? formatData(data, "ttft_p") : null,
+        itl_p: tplName === "LLM" ? formatData(data, "itl_p") : null,
+      };
+      console.log("formatedData", formatedData);
+      setMyChart(formatedData);
       // setEchartData([
       //   {
       //     title: {
@@ -170,8 +180,8 @@ const InferReportContent = () => {
       //   },
       // ]);
     });
-  }, [reportId]);
-  const [echartData, setEchartData] = useState([]);
+  }, [reportId, tplName]);
+  const [myChart, setMyChart] = useState({});
   const [result, setResult] = useState([]);
   const [param, setParam] = useState([]);
   //   const [tplId, setTplId] = useState("");
@@ -180,8 +190,6 @@ const InferReportContent = () => {
   //       ttft: "",
   //       itl: "平均 Token 间时延",
   //       throughput: "吞吐率",
- 
-
 
   return (
     <div style={content} className="width-resp">
@@ -191,42 +199,60 @@ const InferReportContent = () => {
         </Button>
         <div>
           <h1 style={{ color: "red" }}>测试结果</h1>
-          {/* <Descriptions
-            bordered
-            items={result}
-            labelStyle={{ fontWeight: "bold" }}
-            size="small"
-            width={1000}
-          /> */}
-         
-          <Row gutter={32}>
-      <Col span={6}> <Table
-            columns={getReportColumnPropsByType("infer", tplName)}
-            dataSource={result}
-            rowKey="id"
-            defaultColumn={{
-              align: "center",
-            }}
-            pagination={false}
-            size="small"
-          /></Col>
-      <Col span={18}><DemoLine values={echartData && echartData}/></Col>
-    </Row>
-        </div>
-        <div style={{ marginTop: "40px" }}>
-          {/* <Row gutter={40}>
-            {echartData &&
-              echartData.map((chart) => (
-                <Col span={8}>
-                  <ECharts
-                    style={{ height: "400px", width: "400px" }}
-                    chartData={chart}
-                    type="bar"
+          <Row gutter={[32, 32]}>
+            <Col span={12}>
+              <Table
+                columns={getReportColumnPropsByType("infer", tplName)}
+                dataSource={result}
+                rowKey="id"
+                defaultColumn={{
+                  align: "center",
+                }}
+                pagination={false}
+                size="small"
+                bordered
+              />
+            </Col>
+            {myChart.latency_p !== null && (
+              <Col span={12}>
+                <Card>
+                  <DemoLine
+                    values={myChart.latency_p}
+                    title="请求时延百分位图"
+                    yTitle="latency"
                   />
-                </Col>
-              ))}
-          </Row> */}
+                </Card>
+              </Col>
+            )}
+            {myChart.ttft_p !== null && (
+              <Col span={12}>
+                {
+                  <Card>
+                    <DemoLine
+                      values={myChart.ttft_p}
+                      title="首Token时延百分位图"
+                      yTitle="ttft"
+                    />
+                  </Card>
+                }
+              </Col>
+            )}
+            {myChart.itl_p && (
+              <Col span={12}>
+                {
+                  <Card>
+                    <DemoLine
+                      values={myChart.itl_p}
+                      title="Token间时延百分位图"
+                      yTitle="itl"
+                    />
+                  </Card>
+                }
+              </Col>
+            )}
+          </Row>
         </div>
+        <div style={{ marginTop: "40px" }}></div>
         <div>
           <h1 style={{ color: "orange" }}>测试参数</h1>
           <Descriptions title="运行环境" bordered items={env} size="small" />

@@ -19,13 +19,13 @@ const content = {
     paddingBottom: 32,
     // width: 1536,
     margin: "auto",
-    height: "calc(100% - 160px)",
+    // height: "calc(100% - 160px)",
   };
 
   const gradientStyle = (colors) => {
     return {
       background: `linear-gradient(to bottom right, ${colors[0]}, ${colors[1]})`,
-      height: 160,
+      height: 128,
       padding: 16,
       borderRadius: 8,
     };
@@ -99,7 +99,7 @@ const DataContent = ({ data }) => {
                     </div>
                     <div
                       style={{
-                        height: 96,
+                        height: 64,
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",

@@ -292,6 +292,69 @@ const getColumnPropsByType = (tplTag, tplName) => {
           align: "center"
         },
       ],
+      "Stable Diffusion": [
+        {
+          title: "任务名称",
+          dataIndex: "name",
+          key: "name",
+          align: "center"
+        },
+        {
+          title: "模型",
+          dataIndex: "model",
+          key: "model",
+          align: "center"
+        },
+        {
+          title: "数据集",
+          dataIndex: "dataset",
+          key: "dataset",
+          align: "center"
+        },
+        {
+          title: "测试时间",
+          dataIndex: ["config", "max_seconds"],
+          key: "max_seconds",
+          align: "center"
+        },
+        {
+          title: "请求策略",
+          dataIndex: ["config", "rate_type"],
+          key: "rate_type",
+          align: "center"
+        },
+        {
+          title: "请求速率",
+          dataIndex: ["config", "rate"],
+          key: "rate",
+          align: "center"
+        },
+        {
+          title: "精度",
+          dataIndex: ["config", "dtype"],
+          key: "dtype",
+          align: "center"
+        },
+        {
+          title: "分布式",
+          dataIndex: ["config", "distributed_type"],
+          key: "distributed_type",
+          align: "center"
+        },
+        {
+          title: "显存占比",
+          dataIndex: ["config", "gpu_memory_ratio"],
+          key: "gpu_memory_ratio",
+          align: "center"
+        },
+        {
+          title: "任务状态",
+          dataIndex: "status",
+          key: "status",
+          render: (_, record) => (renderStatus(record.status)),
+          align: "center"
+        },
+      ],
     },
     train: {
       LLM: [

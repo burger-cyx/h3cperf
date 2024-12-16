@@ -12,6 +12,50 @@ const getReportColumnPropsByType = (tplTag, tplName) => {
           render: (_, record) => record.rate === null ? record.mode : record.mode + "@" + record.rate.toFixed(2)
       },
       {
+        title: "平均请求数(rps)",
+        dataIndex: "rps",
+        key: "rps",
+        align: "center",
+        render: (_, record) => record.rps.toFixed(2)
+      },
+      {
+        title: "平均请求时延(ms)",
+        dataIndex: "latency",
+        key: "latency",
+        render: (_, record) => record.latency.toFixed(2),
+        align: "center",
+      },
+      {
+        title: "平均首Toekn时延(ms)",
+        dataIndex: "ttft",
+        key: "ttft",
+        render: (_, record) => record.ttft.toFixed(2),
+        align: "center",
+      },
+      {
+        title: "平均Token间时延(ms)",
+        dataIndex: "itl",
+        key: "itl",
+        render: (_, record) => record.itl.toFixed(2),
+        align: "center",
+      },
+      {
+        title: "吞吐率",
+        dataIndex: "throughput",
+        key: "throughput",
+        render: (_, record) => record.throughput.toFixed(2),
+        align: "center",
+      },
+      ],
+      Bert: [
+        {
+          title: "benchmark",
+          dataIndex: "mode",
+          key: "mode",
+          align: "center",
+          render: (_, record) => record.rate === null ? record.mode : record.mode + "@" + record.rate.toFixed(2)
+      },
+      {
         title: "平均请求数",
         dataIndex: "rps",
         key: "rps",
@@ -26,55 +70,51 @@ const getReportColumnPropsByType = (tplTag, tplName) => {
         align: "center",
       },
       ],
-      Bert: [
-        {
-          title: "平均请求数",
-          dataIndex: "rps",
-          key: "rps",
-          align: "center",
-        },
-        {
-          title: "平均请求时延",
-          dataIndex: "latency",
-          key: "latency",
-          align: "center",
-        },
-      ],
       Resnet: [
         {
-          title: "平均请求数",
-          dataIndex: "rps",
-          key: "rps",
+          title: "benchmark",
+          dataIndex: "mode",
+          key: "mode",
           align: "center",
-        },
-        {
-          title: "平均请求时延",
-          dataIndex: "latency",
-          key: "latency",
-          align: "center",
-        },
+          render: (_, record) => record.rate === null ? record.mode : record.mode + "@" + record.rate.toFixed(2)
+      },
+      {
+        title: "平均请求数",
+        dataIndex: "rps",
+        key: "rps",
+        align: "center",
+        render: (_, record) => record.rps.toFixed(2)
+      },
+      {
+        title: "平均请求时延(s)",
+        dataIndex: "latency",
+        key: "latency",
+        render: (_, record) => record.latency.toFixed(2),
+        align: "center",
+      },
       ],
       Yolo: [
         {
-            title: "benchmark",
-            dataIndex: "mode",
-            key: "mode",
-            align: "center",
-        },
-        {
-          title: "平均请求数",
-          dataIndex: "rps",
-          key: "rps",
+          title: "benchmark",
+          dataIndex: "mode",
+          key: "mode",
           align: "center",
-          render: (_, record) => record.rps.toFixed(2)
-        },
-        {
-          title: "平均请求时延",
-          dataIndex: "latency",
-          key: "latency",
-          render: (_, record) => record.latency.toFixed(2),
-          align: "center",
-        },
+          render: (_, record) => record.rate === null ? record.mode : record.mode + "@" + record.rate.toFixed(2)
+      },
+      {
+        title: "平均请求数",
+        dataIndex: "rps",
+        key: "rps",
+        align: "center",
+        render: (_, record) => record.rps.toFixed(2)
+      },
+      {
+        title: "平均请求时延(s)",
+        dataIndex: "latency",
+        key: "latency",
+        render: (_, record) => record.latency.toFixed(2),
+        align: "center",
+      },
       ],
     },
     train: {

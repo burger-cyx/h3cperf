@@ -122,11 +122,11 @@ const InferTaskAddContent = ({ id, name }) => {
       template_id: id,
     };
     console.log("推理任务表单数据 =>", { ...values, ...defaultValue });
-    // inferTaskAdd({ ...values, ...defaultValue }).then(() => {
-    //   navigate(
-    //     "/task/infer/list?tpl_tag=infer&tpl_id=" + id + "&tpl_name=" + name
-    //   );
-    // });
+    inferTaskAdd({ ...values, ...defaultValue }).then(() => {
+      navigate(
+        "/task/infer/list?tpl_tag=infer&tpl_id=" + id + "&tpl_name=" + name
+      );
+    });
   };
   const formItemLayout = {
     labelCol: { span: 8 },
@@ -134,13 +134,13 @@ const InferTaskAddContent = ({ id, name }) => {
   };
   return (
     <div style={content} className="width-resp">
-      <FormRender
+      {/* <FormRender
       form={form1}
       schema={config}
       labelWidth={200}
       maxWidth={400}
       
-    />
+    /> */}
       <Form
         {...formItemLayout}
         form={form}

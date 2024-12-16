@@ -1,19 +1,36 @@
-import React from 'react';
-import { Line } from "@ant-design/plots"
+import React from "react";
+import { Line } from "@ant-design/plots";
 
-const DemoLine = ({ values }) => {
-    const config = {
-      data: {
-        value: values,
+// 封装
+const MyLine = ({ values, title, yTitle }) => {
+  const config = {
+    title: {
+      title: title,
+      style: {
+        titleFill: "red",
+        align: "center",
       },
-      xField: 'x',
-      yField: 'value',
-      sizeField: 'value',
-      shapeField: 'trail',
-      legend: { size: false },
-      colorField: 'name',
-    };
-    return <Line {...config} />;
+    },
+    data: {
+      value: values,
+    },
+    axis: {
+      x: {
+        line: true,
+      },
+      y: {
+        line: true,
+        title: yTitle
+      },
+    },
+    xField: "x",
+    yField: "value",
+    sizeField: "value",
+    shapeField: "trail",
+    legend: { size: false },
+    colorField: "name",
   };
+  return <Line {...config} />;
+};
 
-export default DemoLine
+export default MyLine;

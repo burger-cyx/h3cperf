@@ -5,13 +5,13 @@ import { Outlet } from "react-router-dom";
 const { Content } = Layout;
 const contentStyle = {
   
-  minHeight: 1080 - 128,
+  minHeight: "calc(100vh - 128px)",
   //   lineHeight: "120px",
 
   backgroundColor: "white",
   overflowY: "auto",
   borderBottom: "1px solid #e5e7eb",
-  height: "calc(100vh - 128px)",
+  // height: "calc(100vh - 128px)",
 };
 
 const HomeContent = () => {
