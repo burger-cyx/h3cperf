@@ -7,8 +7,8 @@ const MyLine = ({ values, title, yTitle }) => {
     title: {
       title: title,
       style: {
-        titleFill: "red",
-        align: "center",
+        titleFill: "black",
+        align: "left",
       },
     },
     data: {

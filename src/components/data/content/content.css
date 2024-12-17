@@ -16,3 +16,12 @@
     width: 1536px;
   }
 }
+
+.div-card {
+  border: 2px solid var(--border-color, #000); /* 使用CSS变量，默认为黑色 */
+  transition: border-color 0.5s ease;
+}
+
+.div-card:hover {
+  border: 2px solid var(--hover-color, #000); /* 使用CSS变量，默认为黑色 */
+}

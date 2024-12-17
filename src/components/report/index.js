@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getIconByName } from "../../config/header";
 
 import "./index.css";
-import { Button, Col, Descriptions, Row, Table } from "antd";
+import { Button, Card, Col, Descriptions, Row, Table } from "antd";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getTrainTaskById, inferReportGet, trainReportGet } from "../../api";
 import ECharts from "../ECharts";
@@ -16,6 +16,23 @@ const titleStyle = {
   margin: "auto",
   display: "flex",
   justifyContent: "space-between",
+};
+
+// 重新构造图表结构
+const xField = ["1%", "5%", "10%", "50%", "90%", "95%", "99%"];
+const formatData = (rawData, fliterKey) => {
+  const formated = rawData.flatMap((item) => {
+    // 使用空格分割data字符串，得到一个数组
+    const dataValues = item[fliterKey].split(",");
+    // 构造新的对象数组
+    return dataValues.map((dataValue) => ({
+      name:
+        item.rate === null ? item.mode : item.mode + "@" + item.rate.toFixed(3),
+      value: parseFloat(parseFloat(dataValue).toFixed(3)),
+      x: xField[dataValues.indexOf(dataValue)],
+    }));
+  });
+  return formated;
 };
 
 const ReportTitle = ({ title }) => {
@@ -117,22 +134,19 @@ const InferReportContent = () => {
       });
       setParam(res);
       // 重新构造图表结构
-      const xField = ["1%", "5%", "10%", "50%", "90%", "95%", "99%"];
-      const datas = data.flatMap((item) => {
-        // 使用空格分割data字符串，得到一个数组
-        const dataValues = item.latency_p.split(",");
-        // 构造新的对象数组
-        return dataValues.map((dataValue) => ({
-          name:
-            item.rate === null
-              ? item.mode
-              : item.mode + "@" + item.rate.toFixed(2),
-          value: parseFloat(parseFloat(dataValue).toFixed(2)),
-          x: xField[dataValues.indexOf(dataValue)],
-        }));
-      });
-      console.log("datas", datas);
-      setEchartData(datas);
+      const formatedData =
+        tplName === "LLM"
+          ? {
+              latency_p: formatData(data, "latency_p"),
+              ttft_p: formatData(data, "ttft_p"),
+              itl_p: formatData(data, "itl_p"),
+            }
+          : {
+              latency_p: formatData(data, "latency_p"),
+            };
+
+      console.log("formatedData", formatedData);
+      setMyChart(formatedData);
       // setEchartData([
       //   {
       //     title: {
@@ -172,8 +186,8 @@ const InferReportContent = () => {
       //   },
       // ]);
     });
-  }, [reportId]);
-  const [echartData, setEchartData] = useState([]);
+  }, [reportId, tplName]);
+  const [myChart, setMyChart] = useState({});
   const [result, setResult] = useState([]);
   const [param, setParam] = useState([]);
   //   const [tplId, setTplId] = useState("");
@@ -200,36 +214,59 @@ const InferReportContent = () => {
           /> */}
 
           <Row gutter={[32, 32]}>
-            <Col span={6}>
-              <Table
-                columns={getReportColumnPropsByType("infer", tplName)}
-                dataSource={result}
-                rowKey="id"
-                defaultColumn={{
-                  align: "center",
-                }}
-                pagination={false}
-                size="small"
-              />
+            <Col span={12}>
+              <Card hoverable>
+                <Table
+                  columns={getReportColumnPropsByType("infer", tplName)}
+                  dataSource={result}
+                  rowKey="id"
+                  defaultColumn={{
+                    align: "center",
+                  }}
+                  pagination={false}
+                  size="small"
+                  bordered
+                />
+              </Card>
             </Col>
-            <Col span={18}>
-              <DemoLine values={echartData && echartData} />
-            </Col>
-          </Row>
-        </div>
-        <div style={{ marginTop: "40px" }}>
-          {/* <Row gutter={40}>
-            {echartData &&
-              echartData.map((chart) => (
-                <Col span={8}>
-                  <ECharts
-                    style={{ height: "400px", width: "400px" }}
-                    chartData={chart}
-                    type="bar"
+            {myChart.latency_p && (
+              <Col span={12}>
+                <Card hoverable>
+                  <DemoLine
+                    values={myChart.latency_p && myChart.latency_p}
+                    title="请求时延百分位图"
+                    yTitle="latency"
                   />
-                </Col>
-              ))}
-          </Row> */}
+                </Card>
+              </Col>
+            )}
+            {myChart.ttft_p && (
+              <Col span={12}>
+                {
+                  <Card hoverable>
+                    <DemoLine
+                      values={myChart.ttft_p}
+                      title="首Token时延百分位图"
+                      yTitle="ttft"
+                    />
+                  </Card>
+                }
+              </Col>
+            )}
+            {myChart.itl_p && (
+              <Col span={12}>
+                {
+                  <Card hoverable>
+                    <DemoLine
+                      values={myChart.itl_p}
+                      title="Token间时延百分位图"
+                      yTitle="itl"
+                    />
+                  </Card>
+                }
+              </Col>
+            )}
+          </Row>
         </div>
         <div>
           <h1 style={{ color: "orange" }}>测试参数</h1>
@@ -286,7 +323,7 @@ const TrainReportContent = () => {
           };
         }
       };
-      const result_filter = resultFilter(tplName)
+      const result_filter = resultFilter(tplName);
       const table = Object.keys(result_filter).map((key, index) => {
         const values = summary[key]
           ? parseFloat(summary[key].toFixed(2))
