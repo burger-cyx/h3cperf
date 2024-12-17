@@ -51,6 +51,7 @@ const ECharts = ({ style, chartData, type }) => {
     } else {
       axisOptionSca.series = chartData.series;
       axisOptionSca.title = chartData.title
+      axisOptionSca.yAxis = chartData.yAxis
       options = axisOptionSca;
       echartObj.current.setOption(options);
     }
