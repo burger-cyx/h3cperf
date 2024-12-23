@@ -213,3 +213,45 @@ export const getEnvList = () => {
           }
     })
 }
+
+export const inferTaskCheck = (tpl_id, task_name) => {
+    return http.request({
+        url: '/infer/task/check',
+        method: 'get',
+        params: {
+            "template_id": tpl_id,
+            "name": task_name
+        }
+    })
+}
+
+export const trainTaskCheck = (tpl_id, task_name) => {
+    return http.request({
+        url: '/train/task/check',
+        method: 'get',
+        params: {
+            "template_id": tpl_id,
+            "name": task_name
+        }
+    })
+}
+
+export const modelCheck = (name) => {
+    return http.request({
+        url: '/model/check',
+        method: 'get',
+        params: {
+            "name":name
+        }
+    })
+}
+
+export const datasetCheck = (name) => {
+    return http.request({
+        url: '/dataset/check',
+        method: 'get',
+        params: {
+            "name":name
+        }
+    })
+}

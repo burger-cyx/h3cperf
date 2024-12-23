@@ -94,7 +94,7 @@ const DataContent = ({ data }) => {
                         justifyContent: "space-between",
                       }}
                     >
-                      <span>{item.name}</span>
+                      <span>别名 {item.name}</span>
                       <DeleteOutlined className="my-icon" />
                     </div>
                     <div

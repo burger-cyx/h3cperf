@@ -5,7 +5,7 @@ import {
   DatabaseOutlined,
   HourglassOutlined,
 } from "@ant-design/icons";
-import { red, orange, green, blue } from "@ant-design/colors";
+import { orange, green, blue, volcano } from "@ant-design/colors";
 
 const getIconByName = (name, isSpin) => {
   const icons = {
@@ -23,7 +23,7 @@ const buttonList = [
     url: "/model",
     className: "model",
     iconName: "ProjectOutlined",
-    color: red,
+    color: volcano,
     desc: "支持添加LLM大模型 & 传统模型; 支持HF远程模型 & 本地模型",
   },
   {

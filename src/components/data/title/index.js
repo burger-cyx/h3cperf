@@ -13,6 +13,7 @@ import { getIconByName } from "../../../config/header";
 import { PlusCircleTwoTone, SearchOutlined } from "@ant-design/icons";
 import debounce from "lodash/debounce";
 import "./title.css";
+import { datasetCheck, modelCheck } from "../../../api";
 
 const titleStyle = {
   paddingLeft: 16,
@@ -61,6 +62,22 @@ const DataTitle = ({ title, addFunc, searchFunc }) => {
     }, 1000); // 假设旋转一圈需要 1 秒
     return () => clearTimeout(timer);
   }, []);
+  const checkUsername = async (value, name) => {
+    const check = name === "模型" ? modelCheck : datasetCheck
+    if (!value) {
+      return Promise.reject(new Error("请输入别名"));
+    }
+    try {
+      // 调用后端接口检查用户名是否存在
+      const { data } = await check(value);
+      if (data.content) {
+        return Promise.reject(new Error("别名已存在"));
+      }
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(new Error("校验失败"));
+    }
+  };
   return (
     <div style={{ borderBottom: "1px solid #e5e7eb", height: 112 }}>
       <div style={titleStyle} className="width-resp">
@@ -154,12 +171,18 @@ const DataTitle = ({ title, addFunc, searchFunc }) => {
                     <Form.Item
                       name="name"
                       label={`${title.name}别名`}
+                      validateDebounce={1000}
                       rules={[
                         {
                           required: true,
                           message: "不能为空",
                         },
+                        {
+                          validator: (_, value) => checkUsername(value, title.name),
+                          validateTrigger: ["onChange"],
+                        },
                       ]}
+                      hasFeedback
                     >
                       <Input placeholder={`请输入${title.name}别名`} />
                     </Form.Item>

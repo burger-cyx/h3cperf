@@ -8,11 +8,14 @@ import {
   getModelList,
   getTplById,
   inferTaskAdd,
+  inferTaskCheck,
   trainTaskAdd,
+  trainTaskCheck,
 } from "../../../api";
 import { useNavigate } from "react-router-dom";
 import TaskFormItem from "../../myForm";
 import { useSelector } from "react-redux";
+
 
 const { Option } = Select;
 
@@ -77,7 +80,7 @@ const InferTaskAddContent = ({ id, name }) => {
         config[element.name] = element.default;
       });
       const initialValue = {
-        name: "",
+        // name: "",
         model_id: "",
         dataset_id: "",
         runtime_id: "",
@@ -130,15 +133,23 @@ const InferTaskAddContent = ({ id, name }) => {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
   };
+  const checkUsername = async (value) => {
+    if (!value) {
+      return Promise.reject(new Error('请输入任务名称'));
+    }
+    try {
+      // 调用后端接口检查用户名是否存在
+      const { data } = await inferTaskCheck(id, value);
+      if (data.content) {
+        return Promise.reject(new Error("任务名称已存在"));
+      }
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(new Error("校验失败"));
+    }
+  };
   return (
     <div style={content} className="width-resp">
-      {/* <FormRender
-      form={form1}
-      schema={config}
-      labelWidth={200}
-      maxWidth={400}
-      
-    /> */}
       <Form
         {...formItemLayout}
         form={form}
@@ -156,7 +167,18 @@ const InferTaskAddContent = ({ id, name }) => {
               <Form.Item
                 name="name"
                 label="任务名称"
-                rules={[{ required: true, message: "请输入任务名称!" }]}
+                validateDebounce={1000}
+                rules={[
+                  {
+                    required: true,
+                    message: "请输入任务名称",
+                  },
+                  {
+                    validator: (_,value) => checkUsername(value),
+                    validateTrigger: ["onChange"],
+                  },
+                ]}
+                hasFeedback
               >
                 <Input />
               </Form.Item>
@@ -240,7 +262,6 @@ const InferTaskAddContent = ({ id, name }) => {
 
 const TrainTaskAddContent = ({ id, name }) => {
   const [form] = Form.useForm();
-
   useEffect(() => {
     // 初始化渲染
     getTplById(id).then(({ data }) => {
@@ -266,7 +287,7 @@ const TrainTaskAddContent = ({ id, name }) => {
         });
       console.log("tpl_config", config);
       const initialValue = {
-        name: "",
+        // name: "",
         model_id: "",
         dataset_id: "",
         runtime_id: "",
@@ -320,6 +341,21 @@ const TrainTaskAddContent = ({ id, name }) => {
     wrapperCol: { span: 16 },
   };
   const isDp = useSelector((state) => state.isDisabled.gpu);
+  const checkUsername = async (value) => {
+    if (!value) {
+      return Promise.reject(new Error('请输入任务名称'));
+    }
+    try {
+      // 调用后端接口检查用户名是否存在
+      const { data } = await trainTaskCheck(id, value);
+      if (data.content) {
+        return Promise.reject(new Error("任务名称已存在"));
+      }
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(new Error("校验失败"));
+    }
+  };
   return (
     <div style={content} className="width-resp">
       <Form
@@ -339,9 +375,20 @@ const TrainTaskAddContent = ({ id, name }) => {
               <Form.Item
                 name="name"
                 label="任务名称"
-                rules={[{ required: true, message: "请输入任务名称!" }]}
+                validateDebounce={1000}
+                rules={[
+                  {
+                    required: true,
+                    message: "请输入任务名称",
+                  },
+                  {
+                    validator: (_,value) => checkUsername(value),
+                    validateTrigger: ["onChange"],
+                  },
+                ]}
+                hasFeedback
               >
-                <Input defaultValue="111" />
+                <Input />
               </Form.Item>
             </Col>
             <Col span={6} style={{ height: "32px" }}>
@@ -397,17 +444,24 @@ const TrainTaskAddContent = ({ id, name }) => {
           style={{ margin: "auto", marginTop: 16 }}
           hoverable
         >
-          <TaskFormItem tplConf={tpl.base} category={"base"}  type="train" tplName={name}/>
+          <TaskFormItem
+            tplConf={tpl.base}
+            category={"base"}
+            type="train"
+            tplName={name}
+          />
         </Card>
 
-        {tpl.stage && <Card
-          title="stage"
-          bordered={true}
-          style={{ margin: "auto", marginTop: 16 }}
-          hoverable
-        >
-          <TaskFormItem tplConf={tpl.stage} category="stage" type="train"/>
-        </Card>}
+        {tpl.stage && (
+          <Card
+            title="stage"
+            bordered={true}
+            style={{ margin: "auto", marginTop: 16 }}
+            hoverable
+          >
+            <TaskFormItem tplConf={tpl.stage} category="stage" type="train" />
+          </Card>
+        )}
 
         {tpl.type && (
           <Card
@@ -416,7 +470,7 @@ const TrainTaskAddContent = ({ id, name }) => {
             style={{ margin: "auto", marginTop: 16 }}
             hoverable
           >
-            <TaskFormItem tplConf={tpl.type} category="type" type="train"/>
+            <TaskFormItem tplConf={tpl.type} category="type" type="train" />
           </Card>
         )}
         {isDp && tpl.deepspeed && (
@@ -426,7 +480,11 @@ const TrainTaskAddContent = ({ id, name }) => {
             style={{ margin: "auto", marginTop: 16 }}
             hoverable
           >
-            <TaskFormItem tplConf={tpl.deepspeed} category="deepspeed" type="train"/>
+            <TaskFormItem
+              tplConf={tpl.deepspeed}
+              category="deepspeed"
+              type="train"
+            />
           </Card>
         )}
         <div style={{ margin: "auto", marginTop: 16 }}>
