@@ -72,9 +72,9 @@ const getColumnPropsByType = (tplTag, tplName) => {
           align: "center"
         },
         {
-          title: "请求速率",
-          dataIndex: ["config", "rate"],
-          key: "rate",
+          title: "最大请求速率",
+          dataIndex: ["config", "max_rate"],
+          key: "max_rate",
           align: "center"
         },
         {
@@ -84,10 +84,17 @@ const getColumnPropsByType = (tplTag, tplName) => {
           align: "center"
         },
         {
-          title: "分布式",
+          title: "部署方式",
           dataIndex: ["config", "distributed_type"],
           key: "distributed_type",
           align: "center"
+        },
+        {
+          title: "显卡数量",
+          dataIndex: ["config", "gpus"],
+          key: "gpus",
+          align: "center",
+          render: (_, record) => (record.config.distributed_type === "单机单卡" ? "——" : record.config.gpus)
         },
         {
           title: "显存占比",
@@ -135,9 +142,9 @@ const getColumnPropsByType = (tplTag, tplName) => {
           align: "center"
         },
         {
-          title: "请求速率",
-          dataIndex: ["config", "rate"],
-          key: "rate",
+          title: "最大请求速率",
+          dataIndex: ["config", "max_rate"],
+          key: "max_rate",
           align: "center"
         },
         {
@@ -147,10 +154,17 @@ const getColumnPropsByType = (tplTag, tplName) => {
           align: "center"
         },
         {
-          title: "分布式",
+          title: "部署方式",
           dataIndex: ["config", "distributed_type"],
           key: "distributed_type",
           align: "center"
+        },
+        {
+          title: "显卡数量",
+          dataIndex: ["config", "gpus"],
+          key: "gpus",
+          align: "center",
+          render: (_, record) => (record.config.distributed_type === "单机单卡" ? "——" : record.config.gpus)
         },
         {
           title: "显存占比",
@@ -198,9 +212,9 @@ const getColumnPropsByType = (tplTag, tplName) => {
           align: "center"
         },
         {
-          title: "请求速率",
-          dataIndex: ["config", "rate"],
-          key: "rate",
+          title: "最大请求速率",
+          dataIndex: ["config", "max_rate"],
+          key: "max_rate",
           align: "center"
         },
         {
@@ -210,10 +224,17 @@ const getColumnPropsByType = (tplTag, tplName) => {
           align: "center"
         },
         {
-          title: "分布式",
+          title: "部署方式",
           dataIndex: ["config", "distributed_type"],
           key: "distributed_type",
           align: "center"
+        },
+        {
+          title: "显卡数量",
+          dataIndex: ["config", "gpus"],
+          key: "gpus",
+          align: "center",
+          render: (_, record) => (record.config.distributed_type === "单机单卡" ? "——" : record.config.gpus)
         },
         {
           title: "显存占比",
@@ -261,9 +282,9 @@ const getColumnPropsByType = (tplTag, tplName) => {
           align: "center"
         },
         {
-          title: "请求速率",
-          dataIndex: ["config", "rate"],
-          key: "rate",
+          title: "最大请求速率",
+          dataIndex: ["config", "max_rate"],
+          key: "max_rate",
           align: "center"
         },
         {
@@ -273,10 +294,17 @@ const getColumnPropsByType = (tplTag, tplName) => {
           align: "center"
         },
         {
-          title: "分布式",
+          title: "部署方式",
           dataIndex: ["config", "distributed_type"],
           key: "distributed_type",
           align: "center"
+        },
+        {
+          title: "显卡数量",
+          dataIndex: ["config", "gpus"],
+          key: "gpus",
+          align: "center",
+          render: (_, record) => (record.config.distributed_type === "单机单卡" ? "——" : record.config.gpus)
         },
         {
           title: "显存占比",
@@ -324,9 +352,9 @@ const getColumnPropsByType = (tplTag, tplName) => {
           align: "center"
         },
         {
-          title: "请求速率",
-          dataIndex: ["config", "rate"],
-          key: "rate",
+          title: "最大请求速率",
+          dataIndex: ["config", "max_rate"],
+          key: "max_rate",
           align: "center"
         },
         {
@@ -336,10 +364,17 @@ const getColumnPropsByType = (tplTag, tplName) => {
           align: "center"
         },
         {
-          title: "分布式",
+          title: "部署方式",
           dataIndex: ["config", "distributed_type"],
           key: "distributed_type",
           align: "center"
+        },
+        {
+          title: "显卡数量",
+          dataIndex: ["config", "gpus"],
+          key: "gpus",
+          align: "center",
+          render: (_, record) => (record.config.distributed_type === "单机单卡" ? "——" : record.config.gpus)
         },
         {
           title: "显存占比",
@@ -387,6 +422,7 @@ const getColumnPropsByType = (tplTag, tplName) => {
           dataIndex: ["config", "gpus"],
           key: "gpus",
           align: "center",
+          render: (_, record) => (record.config.distributed_type === "单机单卡" ? "——" : record.config.gpus)
         },
         {
           title: "混合精度",
@@ -417,6 +453,7 @@ const getColumnPropsByType = (tplTag, tplName) => {
           dataIndex: ["config", "zero_stage"],
           key: "zero_stage",
           align: "center",
+          render: (_, record) => (record.config.distributed_type === "单机单卡" ? "——" : record.config.zero_stage)
         },
         {
           title: "任务状态",
@@ -455,6 +492,7 @@ const getColumnPropsByType = (tplTag, tplName) => {
           dataIndex: ["config", "gpus"],
           key: "gpus",
           align: "center",
+          render: (_, record) => (record.config.distributed_type === "单机单卡" ? "——" : record.config.gpus)
         },
         {
           title: "混合精度",
@@ -473,6 +511,7 @@ const getColumnPropsByType = (tplTag, tplName) => {
           dataIndex: ["config", "zero_stage"],
           key: "zero_stage",
           align: "center",
+          render: (_, record) => (record.config.distributed_type === "单机单卡" ? "——" : record.config.zero_stage)
         },
         {
           title: "任务状态",
@@ -511,6 +550,7 @@ const getColumnPropsByType = (tplTag, tplName) => {
           dataIndex: ["config", "gpus"],
           key: "gpus",
           align: "center",
+          render: (_, record) => (record.config.distributed_type === "单机单卡" ? "——" : record.config.gpus)
         },
         {
           title: "混合精度",
@@ -529,6 +569,7 @@ const getColumnPropsByType = (tplTag, tplName) => {
           dataIndex: ["config", "zero_stage"],
           key: "zero_stage",
           align: "center",
+          render: (_, record) => (record.config.distributed_type === "单机单卡" ? "——" : record.config.zero_stage)
         },
         {
           title: "任务状态",
@@ -567,23 +608,12 @@ const getColumnPropsByType = (tplTag, tplName) => {
           dataIndex: ["config", "gpus"],
           key: "gpus",
           align: "center",
-        },
-        {
-          title: "混合精度",
-          dataIndex: ["config", "mixed_precision"],
-          key: "mixed_precision",
-          align: "center",
+          render: (_, record) => (record.config.distributed_type === "单机单卡" ? "——" : record.config.gpus)
         },
         {
           title: "epochs",
           dataIndex: ["config", "epochs"],
           key: "epochs",
-          align: "center",
-        },
-        {
-          title: "deepspeed优化阶段",
-          dataIndex: ["config", "zero_stage"],
-          key: "zero_stage",
           align: "center",
         },
         {

@@ -116,6 +116,30 @@ const getReportColumnPropsByType = (tplTag, tplName) => {
         align: "center",
       },
       ],
+      "Stable Diffusion": 
+      [
+        {
+          title: "benchmark",
+          dataIndex: "mode",
+          key: "mode",
+          align: "center",
+          render: (_, record) => record.rate === null ? record.mode : record.mode + "@" + record.rate.toFixed(2)
+      },
+      {
+        title: "平均请求数(rps)",
+        dataIndex: "rps",
+        key: "rps",
+        align: "center",
+        render: (_, record) => record.rps.toFixed(2)
+      },
+      {
+        title: "平均请求时延(s)",
+        dataIndex: "latency",
+        key: "latency",
+        render: (_, record) => record.latency.toFixed(2),
+        align: "center",
+      },
+      ],
     },
     train: {
       LLM: [

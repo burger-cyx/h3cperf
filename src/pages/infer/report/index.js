@@ -15,7 +15,7 @@ const InferReport = () => {
   };
     return (
     <div style={{height: "100%"}}>
-        <ReportTitle title={title}></ReportTitle>
+        <ReportTitle title={title} tag="infer"></ReportTitle>
         <InferReportContent></InferReportContent>
     </div>
     )

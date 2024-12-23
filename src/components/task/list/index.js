@@ -97,9 +97,9 @@ const TaskListContent = ({ tplInfo, fetchTask, runTask, deleteTask, tableData, t
     navigate("/report/" + tplInfo.tag +  "/get?report_id=" + record.id + "&tpl_id=" + tplInfo.id + "&tpl_name=" + tplInfo.name);
   };
   // 从 url 解析得到的模版名称筛选得到 对应任务列表的列结构
-  const basicColumn = getColumnPropsByType(tplInfo.tag, tplInfo.name);
+  // 基于实际数据修改列结构
+  const basicColumn = getColumnPropsByType(tplInfo.tag, tplInfo.name)
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  
   const onSelectChange = (newSelectedRowKeys) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
@@ -198,6 +198,7 @@ const TaskListContent = ({ tplInfo, fetchTask, runTask, deleteTask, tableData, t
             )}
           </div>
           <Pagination
+            style={{marginTop: 16}}
             total={total}
             showTotal={(total) => `共 ${total} 项`}
             defaultPageSize={10}

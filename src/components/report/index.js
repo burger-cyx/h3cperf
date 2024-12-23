@@ -8,6 +8,7 @@ import { getTrainTaskById, inferReportGet, trainReportGet } from "../../api";
 import ECharts from "../ECharts";
 import getReportColumnPropsByType from "../../config/report/index";
 import DemoLine from "../antdChart";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 const titleStyle = {
   paddingLeft: 16,
@@ -35,7 +36,22 @@ const formatData = (rawData, fliterKey) => {
   return formated;
 };
 
-const ReportTitle = ({ title }) => {
+const ReportTitle = ({ title, tag }) => {
+  const [search] = useSearchParams();
+  const tplId = search.get("tpl_id");
+  const tplName = search.get("tpl_name");
+
+  const navigate = useNavigate();
+  const backToTaskList = () => {
+    navigate(
+      "/task/" +
+        tag +
+        "/list?tpl_tag=infer&tpl_id=" +
+        tplId +
+        "&tpl_name=" +
+        tplName
+    );
+  };
   const [isSpinning, setIsSpinning] = useState(true);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -53,6 +69,16 @@ const ReportTitle = ({ title }) => {
           <p style={{ color: "rgb(107, 114, 128)", fontWeight: 600 }}>
             {title.desc}
           </p>
+        </div>
+        <div style={{ display: "flex" }}>
+          <Button
+            type="primary"
+            onClick={backToTaskList}
+            style={{ marginTop: "auto", marginBottom: 14 }}
+            icon={<ArrowLeftOutlined />}
+          >
+            返回
+          </Button>
         </div>
       </div>
     </div>
@@ -200,9 +226,6 @@ const InferReportContent = () => {
   return (
     <div style={content} className="width-resp">
       <div style={{ height: "calc(100% - 50px)" }}>
-        <Button type="primary" onClick={backToTaskList}>
-          返回
-        </Button>
         <div>
           <h1 style={{ color: "red" }}>测试结果</h1>
           {/* <Descriptions
@@ -214,7 +237,7 @@ const InferReportContent = () => {
           /> */}
 
           <Row gutter={[32, 32]}>
-            <Col span={12}>
+            <Col span={24}>
               <Card hoverable>
                 <Table
                   columns={getReportColumnPropsByType("infer", tplName)}
@@ -230,7 +253,7 @@ const InferReportContent = () => {
               </Card>
             </Col>
             {myChart.latency_p && (
-              <Col span={12}>
+              <Col span={24}>
                 <Card hoverable>
                   <DemoLine
                     values={myChart.latency_p && myChart.latency_p}
@@ -241,7 +264,7 @@ const InferReportContent = () => {
               </Col>
             )}
             {myChart.ttft_p && (
-              <Col span={12}>
+              <Col span={24}>
                 {
                   <Card hoverable>
                     <DemoLine
@@ -254,7 +277,7 @@ const InferReportContent = () => {
               </Col>
             )}
             {myChart.itl_p && (
-              <Col span={12}>
+              <Col span={24}>
                 {
                   <Card hoverable>
                     <DemoLine
@@ -282,15 +305,8 @@ const InferReportContent = () => {
 
 const TrainReportContent = () => {
   const [search] = useSearchParams();
-  const tplId = search.get("tpl_id");
   const reportId = search.get("report_id");
   const tplName = search.get("tpl_name");
-  const navigate = useNavigate();
-  const backToTaskList = () => {
-    navigate(
-      "/task/train/list?tpl_tag=train&tpl_id=" + tplId + "&tpl_name=" + tplName
-    );
-  };
 
   useEffect(() => {
     trainReportGet(reportId).then(({ data }) => {
@@ -407,9 +423,6 @@ const TrainReportContent = () => {
   const [param, setParam] = useState([]);
   return (
     <div style={content} className="width-resp">
-      <Button type="primary" onClick={backToTaskList}>
-        返回
-      </Button>
       <div>
         <h1 style={{ color: "red" }}>测试结果：</h1>
         <Descriptions

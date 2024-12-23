@@ -15,7 +15,7 @@ const TrainReport = () => {
   };
     return (
     <div style={{height: "100%"}}>
-        <ReportTitle title={title}></ReportTitle>
+        <ReportTitle title={title} tag="train"></ReportTitle>
         <TrainReportContent></TrainReportContent></div>
     )
 }

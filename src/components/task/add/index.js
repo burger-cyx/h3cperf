@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getIconByName } from "../../../config/header";
 import "./index.css";
-import { Button, Card, Flex, Form, Input, Select } from "antd";
+import { Button, Card, Col, Flex, Form, Input, Row, Select } from "antd";
 import {
   getDatasetList,
   getEnvList,
@@ -12,8 +12,7 @@ import {
 } from "../../../api";
 import { useNavigate } from "react-router-dom";
 import TaskFormItem from "../../myForm";
-import FormRender, { useForm } from 'form-render';
-import config from "../../../config/config.json"
+import { useSelector } from "react-redux";
 
 const { Option } = Select;
 
@@ -62,14 +61,13 @@ const content = {
 
 const InferTaskAddContent = ({ id, name }) => {
   const [form] = Form.useForm();
-  const form1 = useForm()
   useEffect(() => {
     // 初始化渲染
     console.log("传入的模版id", id);
     getTplById(id).then(({ data }) => {
       const tpl_config = data;
       setTpl(tpl_config);
-      console.log("tpl_config", tpl_config);
+
       //
       const config = {};
       tpl_config.model.forEach((element) => {
@@ -150,74 +148,84 @@ const InferTaskAddContent = ({ id, name }) => {
         <Card
           title="环境配置"
           bordered={true}
-          style={{ width: 600, margin: "auto" }}
+          style={{ margin: "auto" }}
           hoverable
         >
-          <Form.Item
-            name="name"
-            label="任务名称"
-            rules={[{ required: true, message: "请输入任务名称!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="model_id"
-            label="模型"
-            rules={[{ required: true, message: "请选择模型!" }]}
-          >
-            <Select>
-              {models.map((model) => (
-                <Option key={model.name} value={model.id}>
-                  {model.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="dataset_id"
-            label="数据集"
-            rules={[{ required: true, message: "请选择数据集!" }]}
-          >
-            <Select>
-              {datasets.map((dataset) => (
-                <Option key={dataset.name} value={dataset.id}>
-                  {dataset.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="runtime_id"
-            label="运行环境"
-            rules={[{ required: true, message: "请选择运行环境!" }]}
-          >
-            <Select>
-              {envs.map((env) => (
-                <Option key={env.name} value={env.id}>
-                  {env.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+          <Row gutter={[16, 16]} style={{ height: 32 }}>
+            <Col span={6}>
+              <Form.Item
+                name="name"
+                label="任务名称"
+                rules={[{ required: true, message: "请输入任务名称!" }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item
+                name="model_id"
+                label="模型"
+                rules={[{ required: true, message: "请选择模型!" }]}
+              >
+                <Select>
+                  {models.map((model) => (
+                    <Option key={model.name} value={model.id}>
+                      {model.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item
+                name="dataset_id"
+                label="数据集"
+                rules={[{ required: true, message: "请选择数据集!" }]}
+              >
+                <Select>
+                  {datasets.map((dataset) => (
+                    <Option key={dataset.name} value={dataset.id}>
+                      {dataset.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item
+                name="runtime_id"
+                label="运行环境"
+                rules={[{ required: true, message: "请选择运行环境!" }]}
+              >
+                <Select>
+                  {envs.map((env) => (
+                    <Option key={env.name} value={env.id}>
+                      {env.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
         </Card>
         <Card
           title="模型参数"
           bordered={true}
-          style={{ width: 600, margin: "auto", marginTop: 40 }}
+          style={{ margin: "auto", marginTop: 16 }}
           hoverable
         >
-          <TaskFormItem tplConf={tpl.model} />
+          {<TaskFormItem tplConf={tpl.model} category="model" type="infer" />}
         </Card>
         <Card
           title="请求参数"
           bordered={true}
-          style={{ width: 600, margin: "auto", marginTop: 40 }}
+          style={{ margin: "auto", marginTop: 16 }}
           hoverable
         >
-          <TaskFormItem tplConf={tpl.request} />
+          <TaskFormItem tplConf={tpl.request} category="request" type="infer" />
         </Card>
-        <div style={{ width: 600, margin: "auto", marginTop: 20 }}>
-          <Form.Item wrapperCol={{ span: 12 }}>
+        <div style={{ width: "100%", margin: "auto", marginTop: 16 }}>
+          <Form.Item>
             <Flex gap="small" wrap>
               <Button type="primary" htmlType="submit">
                 提交
@@ -299,7 +307,7 @@ const TrainTaskAddContent = ({ id, name }) => {
     const defaultValue = {
       template_id: id,
     };
-    console.log("表单数据 =>", { ...values, ...defaultValue });
+    console.log("训练任务表单数据 =>", { ...values, ...defaultValue });
     trainTaskAdd({ ...values, ...defaultValue }).then(() => {
       navigate(
         "/task/train/list?tpl_tag=train&tpl_id=" + id + "&tpl_name=" + name
@@ -311,7 +319,7 @@ const TrainTaskAddContent = ({ id, name }) => {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
   };
-
+  const isDp = useSelector((state) => state.isDisabled.gpu);
   return (
     <div style={content} className="width-resp">
       <Form
@@ -323,95 +331,105 @@ const TrainTaskAddContent = ({ id, name }) => {
         <Card
           title="环境配置"
           bordered={true}
-          style={{ width: 600, margin: "auto" }}
+          style={{ margin: "auto" }}
           hoverable
         >
-          <Form.Item
-            name="name"
-            label="任务名称"
-            rules={[{ required: true, message: "请输入任务名称!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="model_id"
-            label="模型"
-            rules={[{ required: true, message: "请选择模型!" }]}
-          >
-            <Select>
-              {models.map((model) => (
-                <Option key={model.name} value={model.id}>
-                  {model.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="dataset_id"
-            label="数据集"
-            rules={[{ required: true, message: "请选择数据集!" }]}
-          >
-            <Select>
-              {datasets.map((dataset) => (
-                <Option key={dataset.name} value={dataset.id}>
-                  {dataset.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="runtime_id"
-            label="运行环境"
-            rules={[{ required: true, message: "请选择运行环境!" }]}
-          >
-            <Select>
-              {envs.map((env) => (
-                <Option key={env.name} value={env.id}>
-                  {env.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+          <Row gutter={[16, 16]}>
+            <Col span={6} style={{ height: "32px" }}>
+              <Form.Item
+                name="name"
+                label="任务名称"
+                rules={[{ required: true, message: "请输入任务名称!" }]}
+              >
+                <Input defaultValue="111" />
+              </Form.Item>
+            </Col>
+            <Col span={6} style={{ height: "32px" }}>
+              <Form.Item
+                name="model_id"
+                label="模型"
+                rules={[{ required: true, message: "请选择模型!" }]}
+              >
+                <Select>
+                  {models.map((model) => (
+                    <Option key={model.name} value={model.id}>
+                      {model.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={6} style={{ height: "32px" }}>
+              <Form.Item
+                name="dataset_id"
+                label="数据集"
+                rules={[{ required: true, message: "请选择数据集!" }]}
+              >
+                <Select>
+                  {datasets.map((dataset) => (
+                    <Option key={dataset.name} value={dataset.id}>
+                      {dataset.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={6} style={{ height: "32px" }}>
+              <Form.Item
+                name="runtime_id"
+                label="运行环境"
+                rules={[{ required: true, message: "请选择运行环境!" }]}
+              >
+                <Select>
+                  {envs.map((env) => (
+                    <Option key={env.name} value={env.id}>
+                      {env.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
         </Card>
         <Card
           title="基础参数"
           bordered={true}
-          style={{ width: 600, margin: "auto", marginTop: 40 }}
+          style={{ margin: "auto", marginTop: 16 }}
           hoverable
         >
-          <TaskFormItem tplConf={tpl.base} />
+          <TaskFormItem tplConf={tpl.base} category={"base"}  type="train" tplName={name}/>
         </Card>
-        {tpl.stage && (
-          <Card
-            title="stage"
-            bordered={true}
-            style={{ width: 600, margin: "auto", marginTop: 40 }}
-            hoverable
-          >
-            <TaskFormItem tplConf={tpl.stage} />
-          </Card>
-        )}
+
+        {tpl.stage && <Card
+          title="stage"
+          bordered={true}
+          style={{ margin: "auto", marginTop: 16 }}
+          hoverable
+        >
+          <TaskFormItem tplConf={tpl.stage} category="stage" type="train"/>
+        </Card>}
+
         {tpl.type && (
           <Card
             title="type"
             bordered={true}
-            style={{ width: 600, margin: "auto", marginTop: 40 }}
+            style={{ margin: "auto", marginTop: 16 }}
             hoverable
           >
-            <TaskFormItem tplConf={tpl.type} />
+            <TaskFormItem tplConf={tpl.type} category="type" type="train"/>
           </Card>
         )}
-        {tpl.deepspeed && (
+        {isDp && tpl.deepspeed && (
           <Card
             title="deepspeed"
             bordered={true}
-            style={{ width: 600, margin: "auto", marginTop: 40 }}
+            style={{ margin: "auto", marginTop: 16 }}
             hoverable
           >
-            <TaskFormItem tplConf={tpl.deepspeed} />
+            <TaskFormItem tplConf={tpl.deepspeed} category="deepspeed" type="train"/>
           </Card>
         )}
-        <div style={{ width: 600, margin: "auto", marginTop: 20 }}>
+        <div style={{ margin: "auto", marginTop: 16 }}>
           <Form.Item wrapperCol={{ span: 12 }}>
             <Flex gap="small" wrap>
               <Button type="primary" htmlType="submit">
