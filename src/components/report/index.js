@@ -46,7 +46,7 @@ const ReportTitle = ({ title, tag }) => {
     navigate(
       "/task/" +
         tag +
-        "/list?tpl_tag=infer&tpl_id=" +
+        "/list?tpl_tag=" + tag + "&tpl_id=" +
         tplId +
         "&tpl_name=" +
         tplName
@@ -315,27 +315,25 @@ const TrainReportContent = () => {
       const resultFilter = (tplName) => {
         if (tplName === "Yolo") {
           return {
-            duration: "训练时长",
-            epoch: "epoch",
-            load_timing: "模型加载时间",
-            save_timing: "模型保存时间",
+            duration: "训练时长(s)",
+            // epoch: "epoch",
+            load_timing: "模型加载时间(s)",
+            save_timing: "模型保存时间(s)",
           };
         } else if (tplName === "Resnet") {
           return {
-            duration: "训练时长",
-            epoch: "epoch",
-            load_timing: "模型加载时间",
+            duration: "训练时长(s)",
+            load_timing: "模型加载时间(s)",
             samples_per_second: "每秒样本数",
-            save_timing: "模型保存时间",
+            save_timing: "模型保存时间(s)",
           };
         } else {
           return {
-            duration: "训练时长",
-            epoch: "epoch",
-            load_timing: "模型加载时间",
+            duration: "训练时长(s)",
+            load_timing: "模型加载时间(s)",
             samples_per_second: "每秒样本数",
             tokens_per_second: "每秒token数",
-            save_timing: "模型保存时间",
+            save_timing: "模型保存时间(s)",
           };
         }
       };
@@ -398,12 +396,21 @@ const TrainReportContent = () => {
 
     getTrainTaskById(reportId).then(({ data }) => {
       console.log("getTrainTaskById", data);
-      const params = {
-        batch_size: "Batch Size",
-        gradient_accumulation_steps: "Gradient Accumulation Steps",
-        learning_rate: "Learning Rate",
-        lr_scheduler_type: "Lr Scheduler Type",
-      };
+      const params =
+        tplName === "Yolo"
+          ? {
+              batch_size: "Batch Size",
+              epochs: "epochs",
+              learning_rate: "Learning Rate",
+              image_size: "Image Size"
+            }
+          : {
+              batch_size: "Batch Size",
+              epochs: "epochs",
+              gradient_accumulation_steps: "Gradient Accumulation Steps",
+              learning_rate: "Learning Rate",
+              lr_scheduler_type: "Lr Scheduler Type",
+            };
       const res = Object.keys(params).map((key, index) => {
         const values = data.config[key];
         return {
