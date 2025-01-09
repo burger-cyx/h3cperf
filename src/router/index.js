@@ -12,6 +12,7 @@ import InferTaskAdd from "../pages/infer/task/add";
 import TrainTaskAdd from "../pages/train/task/add";
 import InferReport from "../pages/infer/report";
 import TrainReport from "../pages/train/report";
+import Runtime from "../pages/runtime";
 
 
 
@@ -32,6 +33,10 @@ const routes = [
         {
             path: "dataset",
             Component: Dataset
+        },
+        {
+            path: "runtime",
+            Component: Runtime
         },
         {
             path: "infer",

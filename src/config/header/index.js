@@ -5,7 +5,7 @@ import {
   DatabaseOutlined,
   HourglassOutlined,
 } from "@ant-design/icons";
-import { orange, green, blue, volcano } from "@ant-design/colors";
+import { orange, green, blue, volcano, yellow } from "@ant-design/colors";
 
 const getIconByName = (name, isSpin) => {
   const icons = {
@@ -33,6 +33,14 @@ const buttonList = [
     iconName: "DatabaseOutlined",
     color: orange,
     desc: "支持添加HF远程数据集 & 本地数据集",
+  },
+  {
+    name: "运行环境",
+    url: "/runtime",
+    className: "runtime",
+    iconName: "DatabaseOutlined",
+    color: yellow,
+    desc: "远程运行环境",
   },
   {
     name: "推理",
